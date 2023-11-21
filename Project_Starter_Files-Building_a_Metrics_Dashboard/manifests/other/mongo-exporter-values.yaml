@@ -1,0 +1,9 @@
+mongodb:
+  uri: "mongodb://admin:secret@mongodb-svc.default.svc.cluster.local:27017/example-mongodb?authSource=admin"
+
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: prometheus
+

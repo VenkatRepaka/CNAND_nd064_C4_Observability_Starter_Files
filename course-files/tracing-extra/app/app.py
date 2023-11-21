@@ -21,7 +21,7 @@ def init_tracer(service):
     logging.basicConfig(format="%(message)s", level=logging.DEBUG)
 
     config = Config(
-        config={"sampler": {"type": "const", "param": 1,}, "logging": True,},
+        config={"sampler": {"type": "const", "param": 1,}, "logging": True,'reporter_batch_size': 1,},
         service_name=service,
     )
 
@@ -30,7 +30,7 @@ def init_tracer(service):
 
 
 # starter code
-tracer = init_tracer("test-service")
+tracer = init_tracer("exercise-service")
 
 # not entirely sure but I believe there's a flask_opentracing.init_tracing() missing here
 redis_opentracing.init_tracing(tracer, trace_all_classes=False)
@@ -41,6 +41,8 @@ with tracer.start_span("first-span") as span:
 
 @app.route("/")
 def hello_world():
+    with tracer.start_span("default-span") as span:
+        span.set_tag("default-tag", "Hello World")
     return "Hello World!"
 
 
@@ -55,12 +57,16 @@ def alpha():
 
 @app.route("/beta")
 def beta():
-    r = requests.get("https://www.google.com/search?q=python")
-    dict = {}
-    for key, value in r.headers.items():
-        print(key, ":", value)
-        dict.update({key: value})
-    return jsonify(dict)
+    with tracer.start_span('get-python-search-beta') as span:
+        r = requests.get("https://www.google.com/search?q=python")
+        span.set_tag('jobs-req-headers', r.headers.items())
+        dict = {}
+        for key, value in r.headers.items():
+            print(key, ":", value)
+            dict.update({key: value})
+        with tracer.start_span('redis-span', child_of=span) as response_span:
+            response_span.log_kv({'event': 'response', 'value': dict})
+        return jsonify(dict)
 
 
 @app.route(
@@ -68,15 +74,20 @@ def beta():
 )  # needed to rename this view to avoid function name collision with redis import
 def writeredis():
     # start tracing the redis client
-    redis_opentracing.trace_client(rdb)
-    r = requests.get("https://www.google.com/search?q=python")
-    dict = {}
-    # put the first 50 results into dict
-    for key, value in r.headers.items()[:50]:
-        print(key, ":", value)
-        dict.update({key: value})
-    rdb.mset(dict)
-    return jsonify(dict)
+    with tracer.start_span('get-python-search') as span:
+        redis_opentracing.trace_client(rdb)
+        r = requests.get("https://www.google.com/search?q=python")
+        span.set_tag('jobs-req-headers', r.headers.items())
+        dict = {}
+        # put the first 50 results into dict
+        for key, value in r.headers.items():
+            print(key, ":", value)
+            dict.update({key: value})
+        with tracer.start_span('redis-span', child_of=span) as redis_span:
+            redis_span.set_tag('redis-operation', 'mset')
+            redis_span.log_kv({'event': 'redis_mset', 'value': dict})
+            rdb.mset(dict)
+        return jsonify(dict)
 
 
 if __name__ == "__main__":

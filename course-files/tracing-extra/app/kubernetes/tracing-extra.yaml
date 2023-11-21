@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tracing-extra
+spec:
+  selector:
+    app: tracing-extra
+  ports:
+    - name: backend
+      protocol: TCP
+      port: 7676
+      targetPort: backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tracing-extra
+  name: tracing-extra
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tracing-extra
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: tracing-extra
+    spec:
+      containers:
+      - image: tracing-extra:3
+        name: tracing-extra
+        imagePullPolicy: Never
+        env:
+          - name: PORT
+            value: "7676"
+        #   - name: JAEGER_AGENT_HOST
+        #     value: "localhost"
+        #   - name: JAEGER_AGENT_PORT
+        #     value: "jg-compact-trft"
+        #   - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        #     value: "http://hotrod-collector-headless.observability.svc:4318"
+        #   - name: JAEGER_ENDPOINT
+        #     value: "http://hotrod-collector-headless.observability.svc:4318"
+        ports:
+          - containerPort: 7676
+            name: backend
