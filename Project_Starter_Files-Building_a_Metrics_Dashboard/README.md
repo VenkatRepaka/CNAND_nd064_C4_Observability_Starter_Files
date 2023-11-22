@@ -11,10 +11,20 @@
 *TODO:* Create a dashboard in Grafana that shows Prometheus as a source. Take a screenshot and include it here.
 
 ## Describe SLO/SLI
-*TODO:* Describe, in your own words, what the SLIs are, based on an SLO of *monthly uptime* and *request response time*.
+Below are the SLOs for a monthly uptime and request response time:
+1. 99.5% uptime in a month
+2. 99% of the requests are served under 200 milliseconds
+
+Below are the actual metrics for the current year (SLI): 
+1. We had 99.8% uptime current year
+2. 99% of the API calls had request response time of 150 milliseconds
 
 ## Creating SLI metrics.
-*TODO:* It is important to know why we want to measure certain metrics for our customer. Describe in detail 5 metrics to measure these SLIs. 
+1. Latency: Request response time 
+2. 40X & 50X Errors: Number of requests that have errors/failed
+3. CPU & Memory Usage: Average CPU and Memory, this indicates the overall capacity at which the service is running.
+4. Uptime: Percentage of the time service is hosted/running
+5. Traffic: Number of incoming requests to the service 
 
 ## Create a Dashboard to measure our SLIs
 *TODO:* Create a dashboard to measure the uptime of the frontend and backend services We will also want to measure to measure 40x and 50x errors. Create a dashboard that show these values over a 24 hour period and take a screenshot.
@@ -30,24 +40,31 @@
 
 TROUBLE TICKET
 
-Name:
+Name: Venkat Repaka
 
-Date:
+Date: 22-Nov-2023
 
-Subject:
+Subject: Service - trial, Endpoint - /trace failed with 500 errors 
 
-Affected Area:
+Affected Area: Trial service trace
 
-Severity:
+Severity: High
 
-Description:
+Description: endpoint /trace in trial service is failing with 500 error. 
 
 
 ## Creating SLIs and SLOs
-*TODO:* We want to create an SLO guaranteeing that our application has a 99.95% uptime per month. Name four SLIs that you would use to measure the success of this SLO.
+1. Service uptime of 99.8%
+2. Average latency under 200 milliseconds
+3. Error rate (40X or 50X) to be under 0.1% or success rate (20X) above 99.5%
+
 
 ## Building KPIs for our plan
-*TODO*: Now that we have our SLIs and SLOs, create a list of 2-3 KPIs to accurately measure these metrics as well as a description of why those KPIs were chosen. We will make a dashboard for this, but first write them down here.
+1. Latency - 90 percentile of request durations are under 200ms and average response time is under 200ms
+2. Uptime - Service uptime of at least 99.9%
+3. Errors - Number of failed responses is below 0.5%
 
-## Final Dashboard
-*TODO*: Create a Dashboard containing graphs that capture all the metrics of your KPIs and adequately representing your SLIs and SLOs. Include a screenshot of the dashboard here, and write a text description of what graphs are represented in the dashboard.  
+
+## Final Dashboard 
+Final Dahsboard
+![final dashboard](ans-img/Final%20Dashboard.png)
