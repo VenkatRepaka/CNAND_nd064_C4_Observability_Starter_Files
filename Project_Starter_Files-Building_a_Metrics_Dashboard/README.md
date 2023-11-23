@@ -9,8 +9,7 @@
 ![Grafana_PrometheusAND_Jaeger_Datasources](ans-img/Grafana_Datasources.png)
 
 ## Create a Basic Dashboard
-![Grafana_Prometheus_Dashboard](ans-img/Prometheus_Dashboard_1.png)
-![Grafana_Prometheus_Dashboard](ans-img/Prometheus_Dashboard_2.png)
+![Grafana Home Page](ans-img/Grafana_Home_page.png)
 
 ## Describe SLO/SLI
 Below are the SLOs for a monthly uptime and request response time:
@@ -31,6 +30,7 @@ Below are the actual metrics for the current year (SLI):
 ## Create a Dashboard to measure our SLIs
 Pods uptime in Prometheus
 ![pods_uptime](ans-img/Prometehus_UP-Pods_Status.png)
+![Http_Request_Status_Count](ans-img/Http_Statuses_Count.png)
 
 Services uptime in Grafana
 ![Grafana_Prometheus_Dashboard](ans-img/Prometheus_Dashboard_1.png)
@@ -67,20 +67,23 @@ Description: endpoint /trace in trial service is failing with 500 error.
 
 
 ## Creating SLIs and SLOs
-1. Service uptime of 99.8%
+1. Service uptime of 99.95%
 2. Average latency under 200 milliseconds
-3. Error rate (40X or 50X) to be under 0.1% or success rate (20X) above 99.5%
+3. Error rate (40X or 50X) to be under 0.1% or success rate (20X) above 99.95%
+4. CPU and memory usage is below 75%
 
 ![Measurements](ans-img/SLI_Measurements_Dashboard_1.png)
 ![Measurements](ans-img/SLI_Measurements_Dashboard_2.png)
 
 
 ## Building KPIs for our plan
-1. Latency - 90 percentile of request durations are under 200ms and average response time is under 200ms
-2. Uptime - Service uptime of at least 99.9%
-3. Errors - Number of failed responses is below 0.5%
+1. Latency - 90 percentile of request durations are under 200ms and average response time is under 200ms. This indicates the system is very responsive and the APIs responding in desired time
+2. Uptime - Service uptime of at least 99.9%. This indicates the service is in usable state for the clients. This becomes very important for mission critical applications.
+3. Errors - Number of failed responses is below 0.5%. This indicates the service is not facing any errors. 50X errors indicate issue with the service or any other issues with downstream services. 50X should be of high priority
+4. Saturation (CPU and Memory Usage) - Keeping this under a good threshold indicates the pod/host is not under stress. Prolonged stress on the pod/host may lead to any of the above errors
 
 
 ## Final Dashboard 
 Final Dahsboard
-![final dashboard](ans-img/Final%20Dashboard.png)
+![final dashboard](ans-img/Http_Statuses_Count_Description_FInal_1.png)
+![final dashboard](ans-img/Memory_Host_UpTime_Pods_Final.png)
